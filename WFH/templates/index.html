@@ -1,0 +1,340 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block title %}Kaseya-WFH {% endblock title %}
+{% block head %}
+<!-- Search style files -->
+<link href="{% static 'assets/css/jquery-ui.css' %}" rel="stylesheet">
+<style>
+.date-container {
+    display: flex;
+}
+#submitButton {
+  background-color: #37517e;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+#submitButton:hover {
+  background-color: #47b2e4;
+  transition: 0.2s;
+}
+</style>
+{% endblock head %}
+
+{% block body %}
+  <!-- ======= Header ======= -->
+  <header id="header" class="fixed-top">
+    <div class="container d-flex align-items-center">
+      <img src="{% static 'assets/img/sitelogo.png' %}" alt="" style="width: 120px;">
+      <h1 class="logo me-auto"><a href="https://www.kaseya.com/"></a></h1>
+
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a class="nav-link scrollto" href="https://www.kaseya.com/contact-us/">Contact Us</a></li>
+          <li><a class="getstarted scrollto" href="{% url 'logout' %}">Logout</a></li>
+        </ul>
+        <i class="bi bi-list mobile-nav-toggle"></i>
+      </nav><!-- .navbar -->
+
+    </div>
+  </header><!-- End Header -->
+
+  <!-- ======= Hero Section ======= -->
+  <section id="hero" class="d-flex align-items-center">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6 d-flex flex-column justify-content-center pt-4 pt-lg-0 order-2 order-lg-1" data-aos="fade-up"
+          data-aos-delay="200">
+          {% for msg in messages %}
+          <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong style="text-align:center;">{{msg}}</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+          {% endfor %}
+          <h1>Interim WFH Request</h1>
+          <h2>Make sure you have a stress-free zone, at work</h2>
+          <div class="d-flex justify-content-center justify-content-lg-start">
+            <a href="#forms" class="btn-get-started scrollto">WFH Request</a>
+          </div>
+        </div>
+        <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="zoom-in" data-aos-delay="200">
+          <img src="{% static 'assets/img/hero-img.png' %}" class="img-fluid animated" alt="">
+        </div>
+      </div>
+    </div>
+
+  </section><!-- End Hero -->
+
+  <section id="wfh" class="pricing">
+    <div class="container" data-aos="fade-up">
+
+      <div class="section-title">
+        <h2>WORK FROM HOME</h2>
+        <p>There’s no denying that people can be productive from anywhere. The physical workplace can improve productivity by
+          enabling information sharing and accessibility. In fact, 42% of employees say that the ability to access information
+          quickly and easily boosts their productivity levels. Plus, many employees find productivity to be the driving purpose
+          of the workplace.</p>
+      </div>
+
+      <div class="row">
+
+        <div class="col-lg-12" data-aos="fade-up" data-aos-delay="200">
+          <div class="box featured">
+            <ul>
+              <li><i class="bx bx-check"></i> Employee has to work for the hours he/she would work otherwise in office</li>
+              <li><i class="bx bx-check"></i> Maintain a proper work schedule</li>
+              <li><i class="bx bx-check"></i> Designate a place at home where work can be done in a professional setting</li>
+              <li><i class="bx bx-check"></i> If personal breaks are being taken for personal work, proper status should be sent to manager</li>
+              <li><i class="bx bx-check"></i> Make sure you have proper internet and mobile connectivity. Have a proper routine with breaks</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section><!-- End Pricing Section -->
+
+  <section id="forms" class="pricing">
+    <div class="container" data-aos="fade-up">
+
+      <div class="section-title">
+        <h2>Interim WFH Form</h2>
+      </div>
+
+      <div class="col-lg-12 mt-4 mt-lg-0" data-aos="fade-up" data-aos-delay="200">
+        <div class="box featured">
+          <div class="row">
+            <form>
+              <input id="tags" name="term" class="form-control" placeholder="Search here" style="position: relative; width:30%; left:37%;">
+            </form>
+            <div class="col">
+              <form id="myForm" method="post" onsubmit="return validateForm()">
+                {% csrf_token %}
+                <ul>
+                  <li>
+                    <label for="employee_id">Employee ID</label>
+                    {% render_field form.employee_id class="form-control" %}
+                  </li>
+                  <li>
+                    <label for="employee_name">Employee Name</label>
+                    {% render_field form.employee_name class="form-control" %}
+                  </li>
+                  <li>
+                    <label for="location">Location</label>
+                    {% render_field form.location class="form-control" %}
+                  </li>
+                  <li>
+                    <label for="reporting_manager">Reporting Manager</label>
+                    {% render_field form.reporting_manager class="form-control" %}
+                  </li>
+                  <li>
+                    <label for="email">Email</label>
+                    {% render_field form.email class="form-control" %}
+                  </li>
+                  <li>
+                    <label for="department">Department</label>
+                    {% render_field form.department class="form-control" %}
+                  </li>
+                </ul>
+              
+            </div>
+            <div class="col">
+              <ul>
+                <li>
+                  <label for="designation">Designation</label>
+                  {% render_field form.designation class="form-control" %}
+                </li>
+                <li>
+                  <label for="tenure">Tenure</label>
+                  {% render_field form.tenure class="form-control" %}
+                </li>
+                <li>
+                  <label for="reason">Reason For Work From Home</label>
+                  {% render_field form.reason class="form-control" %}
+                </li>
+                <li id="otherReason">
+                  <label for="reasons">Specify your reason</label>
+                  {% render_field form.description class="form-control" %}
+                </li>
+                <div class="date-container">
+                  <div>
+                    <li>
+                      <label for="start_date">Start Date</label>
+                      <input type="date" class="form-control" name="start_date" id="start_date">
+                    </li>
+                  </div>
+                  <div>
+                    <li>
+                      <label for="end_date">End Date</label>
+                      <input type="date" class="form-control" name="end_date" id="end_date">
+                    </li>
+                  </div>
+                </div>
+                <li>
+                  <label for="num_of_days">Number of Days</label>
+                  {% render_field form.num_of_days class="form-control" style="width:20%" id="num_of_days" %}
+                </li>
+                <li id="error-messages">
+                  <!-- Error messages will be shown here dynamically -->
+                </li>
+                <li>
+                  <button type="submit" id="submitButton">Submit</button>
+                </li>
+
+                
+              </ul>
+
+            </div>
+          </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section><!-- End Forms Section -->
+  <!-- Search JS Files -->
+  <script src="{% static 'assets/js/jquery.min.js' %}"></script>
+  <script src="{% static 'assets/js/jquery-ui.js' %}"></script>
+
+  <script>
+    // jQuery code to show/hide the text field based on the selected option
+    $(document).ready(function() {
+      // Function to handle the visibility and mandatory status of the "#otherReason" field and "#id_description" field
+      function handleOtherReasonField() {
+        if ($('#id_reason').val() === 'Others') {
+          $('#id_description').prop('required', true); // Set the field as mandatory
+        } else {
+          $('#id_description').prop('required', false); // Set the field as not mandatory
+        }
+      }
+  
+      // Call the function on document ready
+      handleOtherReasonField();
+  
+      // Attach the event handler to the "#id_reason" field
+      $('#id_reason').change(function() {
+        handleOtherReasonField();
+      });
+    });
+  </script>
+
+  <script>
+    $(document).ready(function() {
+      $('#tags').autocomplete({
+        source: function(request, response) {
+          $.getJSON('search/', { 'term': request.term }, function(data) {
+            response(data);
+          });
+        },
+        select: function(event, ui) {
+          event.preventDefault();
+    
+          // Fetch the selected employee's data
+          $.getJSON('get_employee_details/', { 'term': ui.item.label }, function(data) {
+            if (data.length > 0) {
+              var employee = data[0];
+    
+              // Populate the form fields with the retrieved employee details
+              $('#id_employee_id').val(employee.employee_id);
+              $('#id_employee_name').val(employee.name);
+              $('#id_location').val(employee.location);
+              $('#id_reporting_manager').val(employee.reporting_manager);
+              $('#id_email').val(employee.email);
+              $('#id_department').val(employee.department);
+              $('#id_designation').val(employee.designation);
+              $('#id_tenure').val(employee.tenure);
+            }
+          });
+        }
+      });
+    });
+    </script>
+    <script>
+      function hideErrorMessages() {
+          var errorMessages = document.getElementById('error-messages');
+          errorMessages.innerHTML = '';
+      }
+
+      function validateForm() {
+          var startDate = document.getElementById('start_date').value;
+          var endDate = document.getElementById('end_date').value;
+          var date = document.getElementById('num_of_days').value;
+          var name = document.getElementById('id_employee_name').value;
+          var errorMessages = document.getElementById('error-messages');
+
+          
+
+          hideErrorMessages(); // Clear any previous error messages
+
+          if (!startDate || !endDate) {
+              errorMessages.innerHTML += '<p style="color: red;">Please select both Start Date and End Date.</p>';
+              return false; // Prevent form submission
+          }
+          if (!date) {
+              errorMessages.innerHTML += '<p style="color: red;">Specify the number of days.</p>';
+              return false;
+          }
+          if (!name) {
+              alert('Please select the required fields.');
+              return false;
+          }
+
+          return true; // Allow form submission
+      }
+
+      // Event listeners to hide error messages when interacting with the form fields
+      document.getElementById('start_date').addEventListener('change', hideErrorMessages);
+      document.getElementById('end_date').addEventListener('change', hideErrorMessages);
+      document.getElementById('num_of_days').addEventListener('input', hideErrorMessages);
+
+      var startDateInput = document.querySelector('#start_date');
+      var endDateInput = document.querySelector('#end_date');
+      var numDaysInput = document.querySelector('#num_of_days');
+      
+      // Funtion to autopopulate the number of days based on the start date and end date.
+      function updateNumDays() {
+        var startDate = new Date(startDateInput.value);
+        var endDate = new Date(endDateInput.value);
+        if (startDate.getTime() && endDate.getTime()) {
+          var numDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+    
+          if (numDays >= 0) {
+            numDaysInput.value = numDays + 1; // Adding 1 to include the start date as well
+            return true; // Allow form submission
+          } else {
+            alert("End date must be after or equal to the start date!");
+            numDaysInput.value = "";
+            return false; // Prevent form submission
+          }
+        }
+      }
+  
+    startDateInput.addEventListener('input', updateNumDays);
+    endDateInput.addEventListener('input', updateNumDays);
+
+    //Function to make the perticular fields readonly
+    document.getElementById("id_reason").addEventListener("change", function() {
+      var reasonSelect = document.getElementById("id_reason");
+      var descriptionInput = document.getElementById("id_description");
+    
+      if (reasonSelect.value !== "Others") {
+        descriptionInput.value = reasonSelect.value;
+        descriptionInput.setAttribute("readonly", true);
+      } else {
+        descriptionInput.value = "";
+        descriptionInput.removeAttribute("readonly");
+      }
+    });
+      
+  </script>
+  
+    
+  <script>
+
+  </script> 
+
+  
+{% endblock body %}
