@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Interim Work From Home Request</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 80%;
+        }
+        th, td {
+            padding: 5px;
+            text-align: left;
+        }
+        td {
+        border: 2px solid black; 
+        }
+        
+    </style>
+</head>
+<body>
+    <p>Hello,</p>
+    <p>This is a notification to inform you that {{ employee_name }} is on an Interim Work From Home. Please find the below details:</p>
+    
+    <table>
+        <tr>
+            <td style="background-color: #9dc2f2;">Request ID</td>
+            <td>{{ request_id }}</td>
+        </tr>
+        <tr>
+            <td style="background-color: #9dc2f2;">Requester</td>
+            <td>{{ requester_mail }}</td>
+        </tr>
+        <tr>
+            <td style="background-color: #9dc2f2;">Employee Name</td>
+            <td>{{ employee_name }}</td>
+        </tr>
+        <tr>
+            <td style="background-color: #9dc2f2;">Tenure</td>
+            <td>{{ tenure }}</td>
+        </tr>
+        <tr>
+            <td style="background-color: #9dc2f2;">Employee ID</td>
+            <td>{{ employee_id }}</td>
+        </tr>
+        <tr>
+            <td style="background-color: #9dc2f2;">Location</td>
+            <td>{{ location }}</td>
+        </tr>
+        <tr>
+            <td style="background-color: #9dc2f2;">Reporting Manager</td>
+            <td>{{ reporting_manager }}</td>
+        </tr>
+        <tr>
+            <td style="background-color: #9dc2f2;">Department</td>
+            <td>{{ department }}</td>
+        </tr>
+        <tr>
+            <td style="background-color: #9dc2f2;">Designation</td>
+            <td>{{ designation }}</td>
+        </tr>
+        <tr>
+            <td style="background-color: #9dc2f2;">Start Date</td>
+            <td>{{ start_date }}</td>
+        </tr>
+        <tr>
+            <td style="background-color: #9dc2f2;">End Date</td>
+            <td>{{ end_date }}</td>
+        </tr>
+        <tr>
+            <td style="background-color: #9dc2f2;">Number of Days</td>
+            <td>{{ num_of_days }}</td>
+        </tr>
+        <tr>
+            <td style="background-color: #9dc2f2;">Reason for WFH</td>
+            <td>{{ reason }}</td>
+        </tr>
+        <tr>
+            <td style="background-color: #9dc2f2;">Submission Time</td>
+            <td>{{ submission_time }}</td>
+        </tr>
+        <tr>
+            <td style="background-color: #9dc2f2;">Description</td>
+            <td>{{ description }}</td>
+        </tr>
+
+    </table>
+    
+</body>
+</html>

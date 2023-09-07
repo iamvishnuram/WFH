@@ -8,11 +8,12 @@ class InterimFields(models.Model):
 )
     
     STATUS_CHOICES = (
-        ('Approved', 'True'),
-        ('Rejected', 'False')
+        ('Approved', 'Approve'),
+        ('Rejected', 'Reject')
     )
     
     request_id = models.CharField(max_length=20)
+    requester_mail = models.CharField(max_length=50)
     employee_name = models.CharField(max_length=100)
     employee_id = models.IntegerField()
     email = models.CharField(max_length=100, null=True)
@@ -26,6 +27,7 @@ class InterimFields(models.Model):
     reason = models.CharField(choices=WORK_FROM_HOME_CHOICES, max_length=50, default="Others")
     description = models.CharField(max_length=100, null=True)
     tenure = models.IntegerField(null=True)
+    submission_time = models.CharField(max_length=50)
     status = models.CharField(choices=STATUS_CHOICES, default="Approved", max_length=50, null=True)
     
     

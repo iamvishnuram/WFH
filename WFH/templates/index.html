@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load custom_filters %}
 {% load widget_tweaks %}
 {% block title %}Kaseya-WFH {% endblock title %}
 {% block head %}
@@ -55,7 +56,9 @@
           </div>
           {% endfor %}
           <h1>Interim WFH Request</h1>
-          <h2>Make sure you have a stress-free zone, at work</h2>
+          {% if user.is_authenticated %}
+          <h2>Hello, {{ user.email|clean_username }}</h2>
+          {% endif %}
           <div class="d-flex justify-content-center justify-content-lg-start">
             <a href="#forms" class="btn-get-started scrollto">WFH Request</a>
           </div>
@@ -68,7 +71,7 @@
 
   </section><!-- End Hero -->
 
-  <section id="wfh" class="pricing">
+  {% comment %} <section id="wfh" class="pricing">
     <div class="container" data-aos="fade-up">
 
       <div class="section-title">
@@ -96,7 +99,7 @@
       </div>
 
     </div>
-  </section><!-- End Pricing Section -->
+  </section><!-- End Pricing Section --> {% endcomment %}
 
   <section id="forms" class="pricing">
     <div class="container" data-aos="fade-up">
@@ -108,6 +111,16 @@
       <div class="col-lg-12 mt-4 mt-lg-0" data-aos="fade-up" data-aos-delay="200">
         <div class="box featured">
           <div class="row">
+            <div class="radios" style="display: block;position: relative;left: 30px; bottom: 30px;">
+              <label>
+                <input type="radio" name="target" value="self" checked>
+                Self
+              </label><br>
+              <label>
+                <input type="radio" name="target" value="others">
+                For Others
+              </label><br>
+            </div>
             <form>
               <input id="tags" name="term" class="form-control" placeholder="Search here" style="position: relative; width:30%; left:37%;">
             </form>
@@ -220,6 +233,49 @@
       });
     });
   </script>
+  <script>
+    $(document).ready(function() {
+      $('#tags').hide();
+      // Event listener for radio button change
+      $('input[type="radio"][name="target"]').change(function() {
+        if ($(this).val() === "self") {
+          // Clear the form
+          $('#myForm')[0].reset();
+          // Call the function to populate employee details
+          populateEmployeeDetails();
+          // Hide the search bar
+          $('#tags').hide();
+        } else if ($(this).val() === "others") {
+          // Clear the form
+          $('#myForm')[0].reset();
+          // Show the search bar
+          $('#tags').show();
+        }
+      });
+    
+      // Function to populate employee details
+      function populateEmployeeDetails() {
+        // Make an AJAX request to your Django API endpoint
+        $.get('get_authenticated_employee_details/', function(data) {
+          // Populate the fields with the received data
+          $('#id_employee_id').val(data.employee_id);
+          $('#id_employee_name').val(data.name);
+          $('#id_location').val(data.location);
+          $('#id_reporting_manager').val(data.reporting_manager);
+          $('#id_email').val(data.email);
+          $('#id_department').val(data.department);
+          $('#id_designation').val(data.designation);
+          $('#id_tenure').val(data.tenure);
+        }).fail(function(error) {
+          console.error('Error fetching employee details:', error);
+        });
+      }
+    
+      // Call the populateEmployeeDetails function when the page loads
+      populateEmployeeDetails();
+    });
+    
+  </script>
 
   <script>
     $(document).ready(function() {
@@ -231,12 +287,12 @@
         },
         select: function(event, ui) {
           event.preventDefault();
-    
+
           // Fetch the selected employee's data
           $.getJSON('get_employee_details/', { 'term': ui.item.label }, function(data) {
             if (data.length > 0) {
               var employee = data[0];
-    
+
               // Populate the form fields with the retrieved employee details
               $('#id_employee_id').val(employee.employee_id);
               $('#id_employee_name').val(employee.name);
@@ -251,67 +307,39 @@
         }
       });
     });
-    </script>
-    <script>
-      function hideErrorMessages() {
-          var errorMessages = document.getElementById('error-messages');
-          errorMessages.innerHTML = '';
-      }
+  </script>
+  <script>
+    function hideErrorMessages() {
+        var errorMessages = document.getElementById('error-messages');
+        errorMessages.innerHTML = '';
+    }
+    // Event listeners to hide error messages when interacting with the form fields
+    document.getElementById('start_date').addEventListener('change', hideErrorMessages);
+    document.getElementById('end_date').addEventListener('change', hideErrorMessages);
+    document.getElementById('num_of_days').addEventListener('input', hideErrorMessages);
 
-      function validateForm() {
-          var startDate = document.getElementById('start_date').value;
-          var endDate = document.getElementById('end_date').value;
-          var date = document.getElementById('num_of_days').value;
-          var name = document.getElementById('id_employee_name').value;
-          var errorMessages = document.getElementById('error-messages');
-
-          
-
-          hideErrorMessages(); // Clear any previous error messages
-
-          if (!startDate || !endDate) {
-              errorMessages.innerHTML += '<p style="color: red;">Please select both Start Date and End Date.</p>';
-              return false; // Prevent form submission
-          }
-          if (!date) {
-              errorMessages.innerHTML += '<p style="color: red;">Specify the number of days.</p>';
-              return false;
-          }
-          if (!name) {
-              alert('Please select the required fields.');
-              return false;
-          }
-
-          return true; // Allow form submission
-      }
-
-      // Event listeners to hide error messages when interacting with the form fields
-      document.getElementById('start_date').addEventListener('change', hideErrorMessages);
-      document.getElementById('end_date').addEventListener('change', hideErrorMessages);
-      document.getElementById('num_of_days').addEventListener('input', hideErrorMessages);
-
-      var startDateInput = document.querySelector('#start_date');
-      var endDateInput = document.querySelector('#end_date');
-      var numDaysInput = document.querySelector('#num_of_days');
-      
-      // Funtion to autopopulate the number of days based on the start date and end date.
-      function updateNumDays() {
-        var startDate = new Date(startDateInput.value);
-        var endDate = new Date(endDateInput.value);
-        if (startDate.getTime() && endDate.getTime()) {
-          var numDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+    var startDateInput = document.querySelector('#start_date');
+    var endDateInput = document.querySelector('#end_date');
+    var numDaysInput = document.querySelector('#num_of_days');
     
-          if (numDays >= 0) {
-            numDaysInput.value = numDays + 1; // Adding 1 to include the start date as well
-            return true; // Allow form submission
-          } else {
-            alert("End date must be after or equal to the start date!");
-            numDaysInput.value = "";
-            return false; // Prevent form submission
-          }
+    // Funtion to autopopulate the number of days based on the start date and end date.
+    function updateNumDays() {
+      var startDate = new Date(startDateInput.value);
+      var endDate = new Date(endDateInput.value);
+      if (startDate.getTime() && endDate.getTime()) {
+        var numDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+  
+        if (numDays >= 0) {
+          numDaysInput.value = numDays + 1; // Adding 1 to include the start date as well
+          return true; // Allow form submission
+        } else {
+          alert("End date must be after or equal to the start date!");
+          numDaysInput.value = "";
+          return false; // Prevent form submission
         }
       }
-  
+    }
+
     startDateInput.addEventListener('input', updateNumDays);
     endDateInput.addEventListener('input', updateNumDays);
 
@@ -328,13 +356,54 @@
         descriptionInput.removeAttribute("readonly");
       }
     });
-      
+    
   </script>
   
     
   <script>
+    document.getElementById("myForm").addEventListener("submit", function(event) {
+        // Prevent the default form submission behavior
+        var startDate = document.getElementById('start_date').value;
+        var endDate = document.getElementById('end_date').value;
+        var date = document.getElementById('num_of_days').value;
+        var name = document.getElementById('id_employee_name').value;
+        var errorMessages = document.getElementById('error-messages');
 
-  </script> 
+        hideErrorMessages(); // Clear any previous error messages
 
-  
+        event.preventDefault();
+
+        // Get a reference to the submit button
+        var submitButton = document.getElementById("submitButton");
+
+        // Store the original button text
+        var originalButtonText = submitButton.innerHTML;
+
+        if (!startDate || !endDate) {
+            errorMessages.innerHTML += '<p style="color: red;">Please select both Start Date and End Date.</p>';
+            return false; // Prevent form submission
+        }
+        if (!date) {
+            errorMessages.innerHTML += '<p style="color: red;">Specify the number of days.</p>';
+            return false;
+        }
+        if (!name) {
+            alert('Please select the required fields.');
+            return false;
+        }
+
+        // Disable the submit button
+        submitButton.disabled = true;
+
+        // Change mouse pointer to "not allowed"
+        submitButton.style.cursor = "not-allowed";
+        
+        // Change the button text to indicate submission
+        submitButton.innerHTML = "Submitting...";
+
+        // Perform the form submission
+        document.getElementById("myForm").submit();
+    });
+</script>
+
 {% endblock body %}
